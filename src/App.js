@@ -1,55 +1,97 @@
 import React, { Component } from 'react';
 import shortid from 'shortid';
 
-import TodoEditor from './components/TodoEditor';
-import TodoList from './components/TodoList';
+import ContactForm from './components/ContactForm';
+import ContactList from './components/ContactList';
 import Filter from './components/Filter';
 
 class App extends Component {
   state = {
-    // contacts: [
-    //   { id: 'id-1', name: 'Pug Friend' },
-    //   { id: 'id-2', name: 'Mops Love' },
-    // ],
-    // name: '',
-
     contacts: [
       {
         id: 'id-1',
-        text: 'Выучить основы React',
+        name: 'Rosie Simpson',
         number: '459-12-56',
         completed: false,
       },
-      { id: 'id-2', text: 'Разобраться с React Router', completed: false },
-      { id: 'id-3', text: 'Пережить Redux', completed: false },
-      { id: 'id-4', text: 'Попробовать React Hooks', completed: false },
+      {
+        id: 'id-2',
+        name: 'Hermione Kline',
+        number: '443-89-12',
+        completed: false,
+      },
+      {
+        id: 'id-3',
+        name: 'Eden Clements',
+        number: '645-17-79',
+        completed: false,
+      },
+      {
+        id: 'id-4',
+        name: 'Annie Copeland',
+        number: '227-91-26',
+        completed: false,
+      },
     ],
     filter: '',
   };
 
-  addTodo = ({ text, number }) => {
-    const todo = {
+  addContact = ({ name, number }) => {
+    const contact = {
       id: shortid.generate(),
-      text,
+      name,
       number,
       completed: false,
     };
 
-    this.setState(({ contacts }) => ({
-      contacts: [todo, ...contacts],
-    }));
+    if (this.state.contacts.find(contact => contact.name === name)) {
+      alert(`${name} is already in contacts.`);
+    } else {
+      this.setState(({ contacts }) => ({
+        contacts: [contact, ...contacts],
+      }));
+    }
   };
 
-  deleteTodo = todoId => {
+  // === LENA
+  // addContact = ({ name, number }) => {
+  //   const { contacts } = this.state;
+  //   const contact = {
+  //     id: shortid.generate(),
+  //     name,
+  //     number,
+  //   };
+
+  //   if (contacts.find(contact => contact.name === name)) {
+  //     alert(`${name} is already in contacts.`);
+  //   } else {
+  //     this.setState(prevState => ({
+  //       contacts: [...prevState.contacts, contact],
+  //     }));
+  //   }
+  // };
+  // === LENA
+
+  deleteContact = contactId => {
     this.setState(prevState => ({
-      contacts: prevState.contacts.filter(todo => todo.id !== todoId),
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
 
-  togleCompleted = todoId => {
+  // === LENA
+  // deleteContact = contactId => {
+  //   this.setState(prevState => ({
+  //     contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+  //   }));
+  // };
+  // === LENA
+
+  togleCompleted = contactId => {
     this.setState(({ contacts }) => ({
-      contacts: contacts.map(todo =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
+      contacts: contacts.map(contact =>
+        contact.id === contactId
+          ? { ...contact, completed: !contact.completed }
+          : contact,
       ),
     }));
   };
@@ -58,15 +100,27 @@ class App extends Component {
     this.setState({ filter: e.currentTarget.value });
   };
 
-  getVisibleTodos = () => {
+  // === LENA
+  // changeFilter = e => {
+  //   this.setState({ filter: e.currentTarget.value });
+  // };
+  // === LENA
+
+  getVisibleContacts = () => {
     const { contacts, filter } = this.state;
-
-    const normalizedFilter = filter.toLocaleLowerCase();
-
-    return contacts.filter(todo =>
-      todo.text.toLocaleLowerCase().includes(normalizedFilter),
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter),
     );
   };
+
+  // getFilterContacts = () => {
+  //   const { filter, contacts } = this.state;
+  //   const normalizedFilter = filter.toLowerCase();
+  //   return contacts.filter(contact =>
+  //     contact.name.toLowerCase().includes(normalizedFilter),
+  //   );
+  // };
 
   getCompletedTodoCount = () => {
     const { contacts } = this.state;
@@ -77,38 +131,27 @@ class App extends Component {
   render() {
     const { contacts, filter } = this.state;
 
-    // const totalTodosCount = todos.length;
-    // const completeTodosCount = this.getCompletedTodoCount();
-    const visibleTodos = this.getVisibleTodos();
+    const totalTodosCount = contacts.length;
+    const completeTodosCount = this.getCompletedTodoCount();
+    const visibleTodos = this.getVisibleContacts();
 
     return (
-      <>
-        {/* <div>
-          <p>Всего: {totalTodosCount}</p>
-          <p>Ко-во выполненных: {completeTodosCount} </p>
-        </div> */}
+      <div>
+        <h1>Phonebook</h1>
+        <p>All contacts: {totalTodosCount}</p>
+        <p>Number of selected: {completeTodosCount} </p>
 
-        <TodoEditor onSubmit={this.addTodo} />
-        <TodoEditor onSubmit={this.addTodo} />
+        <ContactForm onSubmit={this.addContact} />
+        <h2>Contacts</h2>
         <Filter value={filter} onChange={this.hangeFilter} />
-        <TodoList
-          todos={visibleTodos}
-          onDeleteTodo={this.deleteTodo}
+        <ContactList
+          contacts={visibleTodos}
+          onDeleteTodo={this.deleteContact}
           onTogleCompleted={this.togleCompleted}
         />
-      </>
+      </div>
     );
   }
 }
-
-// const App = () => (
-//   <>
-//     {/* <ColorPicker options={colorPickerOptions} /> */}
-//     {/* <hr />
-//     <Dropdown />
-//     <hr />
-//     <Feedback /> */}
-//   </>
-// );
 
 export default App;
