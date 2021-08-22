@@ -5,6 +5,8 @@ import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 import Filter from './components/Filter';
 
+import s from './App.module.css';
+
 class App extends Component {
   state = {
     contacts: [
@@ -53,40 +55,13 @@ class App extends Component {
     }
   };
 
-  // === LENA
-  // addContact = ({ name, number }) => {
-  //   const { contacts } = this.state;
-  //   const contact = {
-  //     id: shortid.generate(),
-  //     name,
-  //     number,
-  //   };
-
-  //   if (contacts.find(contact => contact.name === name)) {
-  //     alert(`${name} is already in contacts.`);
-  //   } else {
-  //     this.setState(prevState => ({
-  //       contacts: [...prevState.contacts, contact],
-  //     }));
-  //   }
-  // };
-  // === LENA
-
   deleteContact = contactId => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
 
-  // === LENA
-  // deleteContact = contactId => {
-  //   this.setState(prevState => ({
-  //     contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-  //   }));
-  // };
-  // === LENA
-
-  togleCompleted = contactId => {
+  toggleCompleted = contactId => {
     this.setState(({ contacts }) => ({
       contacts: contacts.map(contact =>
         contact.id === contactId
@@ -100,12 +75,6 @@ class App extends Component {
     this.setState({ filter: e.currentTarget.value });
   };
 
-  // === LENA
-  // changeFilter = e => {
-  //   this.setState({ filter: e.currentTarget.value });
-  // };
-  // === LENA
-
   getVisibleContacts = () => {
     const { contacts, filter } = this.state;
     const normalizedFilter = filter.toLowerCase();
@@ -114,15 +83,7 @@ class App extends Component {
     );
   };
 
-  // getFilterContacts = () => {
-  //   const { filter, contacts } = this.state;
-  //   const normalizedFilter = filter.toLowerCase();
-  //   return contacts.filter(contact =>
-  //     contact.name.toLowerCase().includes(normalizedFilter),
-  //   );
-  // };
-
-  getCompletedTodoCount = () => {
+  getCompletedContactCount = () => {
     const { contacts } = this.state;
 
     return contacts.reduce((acc, todo) => (todo.completed ? acc + 1 : acc), 0);
@@ -131,23 +92,23 @@ class App extends Component {
   render() {
     const { contacts, filter } = this.state;
 
-    const totalTodosCount = contacts.length;
-    const completeTodosCount = this.getCompletedTodoCount();
-    const visibleTodos = this.getVisibleContacts();
+    const totalContactsCount = contacts.length;
+    const completeContactsCount = this.getCompletedContactCount();
+    const visibleContacts = this.getVisibleContacts();
 
     return (
-      <div>
-        <h1>Phonebook</h1>
-        <p>All contacts: {totalTodosCount}</p>
-        <p>Number of selected: {completeTodosCount} </p>
+      <div className={s.container}>
+        <h1 className={s.mainTitle}>Phonebook</h1>
+        <p className={s.text}>All contacts: {totalContactsCount}</p>
+        <p className={s.text}>Number of selected: {completeContactsCount} </p>
 
         <ContactForm onSubmit={this.addContact} />
-        <h2>Contacts</h2>
+        <h2 className={s.mainTitle}>Contacts</h2>
         <Filter value={filter} onChange={this.hangeFilter} />
         <ContactList
-          contacts={visibleTodos}
-          onDeleteTodo={this.deleteContact}
-          onTogleCompleted={this.togleCompleted}
+          contacts={visibleContacts}
+          onDeleteContact={this.deleteContact}
+          onToggleCompleted={this.toggleCompleted}
         />
       </div>
     );
